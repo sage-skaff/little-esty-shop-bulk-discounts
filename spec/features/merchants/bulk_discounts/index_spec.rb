@@ -33,4 +33,23 @@ RSpec.describe 'merchant bulk discounts index' do
       expect(page).to_not have_content('Quantity Threshold: 10')
     end
   end
+
+  it 'bulk discounts link to their show pages' do
+    pokemart = Merchant.create!(name: 'PokeMart')
+
+    discount1 = pokemart.bulk_discounts.create!(percentage: 10, quantity_threshold: 10)
+    discount2 = pokemart.bulk_discounts.create!(percentage: 20, quantity_threshold: 20)
+
+    visit "/merchants/#{pokemart.id}/bulk_discounts"
+
+    within "#discount-#{discount1.id}" do
+      expect(page).to have_link("Discount ##{discount1.id}")
+    end
+
+    within "#discount-#{discount2.id}" do
+      expect(page).to have_link("Discount ##{discount2.id}")
+      click_link "Discount ##{discount2.id}"
+    end
+    expect(current_path).to eq("/merchants/#{pokemart.id}/bulk_discounts/#{discount2.id}")
+  end
 end
