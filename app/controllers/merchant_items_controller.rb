@@ -19,18 +19,19 @@ class MerchantItemsController < ApplicationController
   def update
     @item = Item.find(params[:id])
 
-    if params[:commit] == "Disable"
+    if params[:commit] == 'Disable'
       @item.update(status: merchant_item_params[:status])
-      redirect_to "/merchants/#{@item.merchant_id}/items"      
-    elsif params[:commit] == "Enable"
+      redirect_to "/merchants/#{@item.merchant_id}/items"
+    elsif params[:commit] == 'Enable'
       @item.update(status: merchant_item_params[:status])
       redirect_to "/merchants/#{@item.merchant_id}/items"
     else
-      @item.update(name: merchant_item_params[:name],description: merchant_item_params[:description],unit_price: merchant_item_params[:unit_price])
+      @item.update(name: merchant_item_params[:name], description: merchant_item_params[:description],
+                   unit_price: merchant_item_params[:unit_price])
 
-      redirect_to "/merchants/#{merchant_item_params[:merchant_id]}/items/#{params[:id]}", notice: "Item information updated!"
+      redirect_to "/merchants/#{merchant_item_params[:merchant_id]}/items/#{params[:id]}",
+                  notice: 'Item information updated!'
     end
-
   end
 
   def new
@@ -38,8 +39,8 @@ class MerchantItemsController < ApplicationController
   end
 
   def create
-    if params[:item_description] != "" && params[:item_name] != "" && params[:unit_price] != nil
-      
+    if params[:item_description] != '' && params[:item_name] != '' && !params[:unit_price].nil?
+
       item = Item.create(
         name: params[:item_name],
         description: params[:item_description],
@@ -49,15 +50,15 @@ class MerchantItemsController < ApplicationController
 
       redirect_to "/merchants/#{params[:merchant_id]}/items", notice: "#{params[:item_name]} created!"
     else
-      flash[:notice] = "Error - please complete all fields"
-      
+      flash[:notice] = 'Error - please complete all fields'
+
       redirect_to "/merchants/#{params[:merchant_id]}/items/new"
     end
-
   end
 
   private
+
   def merchant_item_params
-    params.permit(:name, :description, :unit_price, :merchant_id, :status,)
+    params.permit(:name, :description, :unit_price, :merchant_id, :status)
   end
 end
