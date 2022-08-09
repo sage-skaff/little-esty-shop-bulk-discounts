@@ -13,7 +13,7 @@
 <div id="discounts">
   <% @discounts.each do |discount| %>
     <div id="discount-<%= discount.id %>">
-      <strong>Discount #<%= discount.id %></strong>
+      <strong><%= link_to "Discount ##{discount.id}", "/merchants/#{@merchant.id}/bulk_discounts/#{discount.id}" %></strong>
       <p>Percentage: <%= discount.percentage %>%</p>
       <p>Quantity Threshold: <%= discount.quantity_threshold %></p>
     </div>
