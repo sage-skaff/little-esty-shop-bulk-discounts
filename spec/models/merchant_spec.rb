@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe Merchant do
   describe 'relationships' do
     it { should have_many :items }
+    it { should have_many :bulk_discounts }
   end
 
   describe 'instance methods' do
@@ -138,24 +139,31 @@ RSpec.describe Merchant do
     end
 
     it 'returns all associated enabled items' do
-      merchant1 = Merchant.create!(name: "Snake Shop", status: 'Enabled')
+      merchant1 = Merchant.create!(name: 'Snake Shop', status: 'Enabled')
 
-      item1_merchant1 = Item.create!(name: "Snake Pants", description: "It is just a sock.", unit_price: 400, merchant_id: merchant1.id, status: "Enabled")
-      item2_merchant1 = Item.create!(name: "Stinky Bits", description: "Nondescript floaty chunks.", unit_price: 200, merchant_id: merchant1.id, status: "Disabled")
-      item3_merchant1 = Item.create!(name: "Fur Ball", description: "Ew pretty nasty!", unit_price: 1000, merchant_id: merchant1.id, status: "Enabled")
+      item1_merchant1 = Item.create!(name: 'Snake Pants', description: 'It is just a sock.', unit_price: 400,
+                                     merchant_id: merchant1.id, status: 'Enabled')
+      item2_merchant1 = Item.create!(name: 'Stinky Bits', description: 'Nondescript floaty chunks.', unit_price: 200,
+                                     merchant_id: merchant1.id, status: 'Disabled')
+      item3_merchant1 = Item.create!(name: 'Fur Ball', description: 'Ew pretty nasty!', unit_price: 1000,
+                                     merchant_id: merchant1.id, status: 'Enabled')
 
-      expect(merchant1.enabled_items).to eq([item1_merchant1,item3_merchant1])
+      expect(merchant1.enabled_items).to eq([item1_merchant1, item3_merchant1])
     end
 
     it 'returns all associated disabled items' do
-      merchant1 = Merchant.create!(name: "Snake Shop", status: 'Enabled')
+      merchant1 = Merchant.create!(name: 'Snake Shop', status: 'Enabled')
 
-      item1_merchant1 = Item.create!(name: "Snake Pants", description: "It is just a sock.", unit_price: 400, merchant_id: merchant1.id, status: "Enabled")
-      item2_merchant1 = Item.create!(name: "Stinky Bits", description: "Nondescript floaty chunks.", unit_price: 200, merchant_id: merchant1.id, status: "Disabled")
-      item3_merchant1 = Item.create!(name: "Fur Ball", description: "Ew pretty nasty!", unit_price: 1000, merchant_id: merchant1.id, status: "Enabled")
-      item4_merchant1 = Item.create!(name: "Big Chips", description: "Yum yum!", unit_price: 1000, merchant_id: merchant1.id, status: "Disabled")
+      item1_merchant1 = Item.create!(name: 'Snake Pants', description: 'It is just a sock.', unit_price: 400,
+                                     merchant_id: merchant1.id, status: 'Enabled')
+      item2_merchant1 = Item.create!(name: 'Stinky Bits', description: 'Nondescript floaty chunks.', unit_price: 200,
+                                     merchant_id: merchant1.id, status: 'Disabled')
+      item3_merchant1 = Item.create!(name: 'Fur Ball', description: 'Ew pretty nasty!', unit_price: 1000,
+                                     merchant_id: merchant1.id, status: 'Enabled')
+      item4_merchant1 = Item.create!(name: 'Big Chips', description: 'Yum yum!', unit_price: 1000,
+                                     merchant_id: merchant1.id, status: 'Disabled')
 
-      expect(merchant1.disabled_items).to eq([item2_merchant1,item4_merchant1])
+      expect(merchant1.disabled_items).to eq([item2_merchant1, item4_merchant1])
     end
   end
 end

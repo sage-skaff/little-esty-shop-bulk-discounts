@@ -6,7 +6,7 @@ RSpec.describe 'merchant bulk discounts index' do
 
     visit "/merchants/#{pokemart.id}"
 
-    click_link 'View All My Discounts'
+    click_link 'My Discounts'
 
     expect(current_path).to eq("/merchants/#{pokemart.id}/bulk_discounts")
   end
