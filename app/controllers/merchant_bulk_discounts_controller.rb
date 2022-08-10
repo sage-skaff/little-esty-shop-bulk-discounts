@@ -18,7 +18,6 @@ class MerchantBulkDiscountsController < ApplicationController
     if discount.save
       redirect_to merchant_bulk_discounts_path(merchant_bulk_discount_params[:merchant_id])
     else
-
       redirect_to new_merchant_bulk_discounts_path(merchant_bulk_discount_params[:merchant_id])
     end
   end

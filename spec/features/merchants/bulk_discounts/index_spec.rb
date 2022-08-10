@@ -52,4 +52,24 @@ RSpec.describe 'merchant bulk discounts index' do
     end
     expect(current_path).to eq("/merchants/#{pokemart.id}/bulk_discounts/#{discount2.id}")
   end
+
+  it 'bulk discount have link to delete' do
+    pokemart = Merchant.create!(name: 'PokeMart')
+
+    discount1 = pokemart.bulk_discounts.create!(percentage: 10, quantity_threshold: 10)
+    discount2 = pokemart.bulk_discounts.create!(percentage: 20, quantity_threshold: 20)
+
+    visit "/merchants/#{pokemart.id}/bulk_discounts"
+
+    within "#discount-#{discount1.id}" do
+      expect(page).to have_link('Delete')
+    end
+
+    within "#discount-#{discount2.id}" do
+      expect(page).to have_content('Percentage: 20%')
+      expect(page).to have_link('Delete')
+      click_link 'Delete'
+    end
+    expect(page).to_not have_content('Percentage: 20%')
+  end
 end
