@@ -134,11 +134,18 @@ RSpec.describe 'merchant_invoices show page' do
     invoice_item2 = InvoiceItem.create!(invoice: invoice2, item: item4, quantity: 2, unit_price: 15, status: 1)
     invoice_item2 = InvoiceItem.create!(invoice: invoice2, item: item5, quantity: 1, unit_price: 20, status: 1)
 
+    discount = merch2.bulk_discounts.create!(percentage: 50, quantity_threshold: 1)
+
     visit merchant_invoice_path(merch1.id, invoice1.id)
 
     within '#invoice-item-total-revenue' do
       expect(page).to have_content('Total Revenue: $42.00')
       expect(page).to_not have_content('Total Revenue: $50.00')
+    end
+
+    within '#invoice-item-discounted-revenue' do
+      expect(page).to have_content('Discounted Revenue: $21.00')
+      expect(page).to_not have_content('Discounted Revenue: $42.00')
     end
   end
 end
