@@ -35,9 +35,27 @@ RSpec.describe InvoiceItem do
       invoiceitem1_item1_invoice1 = InvoiceItem.create!(item_id: item1_merchant1.id, invoice_id: invoice1.id,
                                                         quantity: 70, unit_price: 50, status: 0)
 
-      discount = merchant1.discounts.create!(percentage: 10, quantity_threshold: 10)
+      discount = merchant1.bulk_discounts.create!(percentage: 10, quantity_threshold: 10)
 
       expect(invoiceitem1_item1_invoice1.discounted_revenue).to eq(3150)
+    end
+
+    it 'returns top_discount' do
+      merchant1 = Merchant.create!(name: 'Snake Shop')
+
+      customer = Customer.create!(first_name: 'Alep', last_name: 'Bloyd')
+
+      item1_merchant1 = Item.create!(name: 'Snake Pants', description: 'It is just a sock.', unit_price: 400,
+                                     merchant_id: merchant1.id)
+
+      invoice1 = Invoice.create!(customer_id: customer.id, status: 2)
+
+      invoiceitem1_item1_invoice1 = InvoiceItem.create!(item_id: item1_merchant1.id, invoice_id: invoice1.id,
+                                                        quantity: 70, unit_price: 50, status: 0)
+
+      discount = merchant1.bulk_discounts.create!(percentage: 10, quantity_threshold: 10)
+
+      expect(invoiceitem1_item1_invoice1.top_discount).to eq(discount)
     end
   end
 end
