@@ -71,10 +71,10 @@ RSpec.describe 'merchant_invoices show page' do
     invoice2 = customer2.invoices.create!(status: 1)
 
     invoice_item1 = InvoiceItem.create!(invoice: invoice1, item: item1, quantity: 1, unit_price: 20, status: 1)
-    invoice_item1 = InvoiceItem.create!(invoice: invoice1, item: item2, quantity: 2, unit_price: 6, status: 1)
-    invoice_item1 = InvoiceItem.create!(invoice: invoice1, item: item3, quantity: 1, unit_price: 10, status: 1)
-    invoice_item2 = InvoiceItem.create!(invoice: invoice2, item: item4, quantity: 2, unit_price: 15, status: 1)
-    invoice_item2 = InvoiceItem.create!(invoice: invoice2, item: item5, quantity: 1, unit_price: 20, status: 1)
+    invoice_item2 = InvoiceItem.create!(invoice: invoice1, item: item2, quantity: 2, unit_price: 6, status: 1)
+    invoice_item3 = InvoiceItem.create!(invoice: invoice1, item: item3, quantity: 1, unit_price: 10, status: 1)
+    invoice_item4 = InvoiceItem.create!(invoice: invoice2, item: item4, quantity: 2, unit_price: 15, status: 1)
+    invoice_item5 = InvoiceItem.create!(invoice: invoice2, item: item5, quantity: 1, unit_price: 20, status: 1)
 
     visit merchant_invoice_path(merch1.id, invoice1.id)
 
@@ -129,10 +129,10 @@ RSpec.describe 'merchant_invoices show page' do
     invoice2 = customer2.invoices.create!(status: 1)
 
     invoice_item1 = InvoiceItem.create!(invoice: invoice1, item: item1, quantity: 1, unit_price: 20, status: 1)
-    invoice_item1 = InvoiceItem.create!(invoice: invoice1, item: item2, quantity: 2, unit_price: 6, status: 1)
-    invoice_item1 = InvoiceItem.create!(invoice: invoice1, item: item3, quantity: 1, unit_price: 10, status: 1)
-    invoice_item2 = InvoiceItem.create!(invoice: invoice2, item: item4, quantity: 2, unit_price: 15, status: 1)
-    invoice_item2 = InvoiceItem.create!(invoice: invoice2, item: item5, quantity: 1, unit_price: 20, status: 1)
+    invoice_item2 = InvoiceItem.create!(invoice: invoice1, item: item2, quantity: 2, unit_price: 6, status: 1)
+    invoice_item3 = InvoiceItem.create!(invoice: invoice1, item: item3, quantity: 1, unit_price: 10, status: 1)
+    invoice_item4 = InvoiceItem.create!(invoice: invoice2, item: item4, quantity: 2, unit_price: 15, status: 1)
+    invoice_item5 = InvoiceItem.create!(invoice: invoice2, item: item5, quantity: 1, unit_price: 20, status: 1)
 
     discount = merch1.bulk_discounts.create!(percentage: 50, quantity_threshold: 1)
 
@@ -148,5 +148,43 @@ RSpec.describe 'merchant_invoices show page' do
       expect(page).to_not have_content('Discounted Revenue: $42.00')
     end
   end
-end
 
+  it 'invoice items link to applied bulk discounts' do
+    merch1 = Merchant.create!(name: 'Needful Things Imports')
+
+    customer1 = Customer.create!(first_name: 'Bob', last_name: 'Schneider')
+    customer2 = Customer.create!(first_name: 'Veruca', last_name: 'Salt')
+
+    item1 = merch1.items.create!(name: 'Phoenix Feather Wand', description: 'Ergonomic grip', unit_price: 20)
+    item2 = merch1.items.create!(name: 'Harmonica', description: 'Makes pretty noise', unit_price: 6)
+    item3 = merch1.items.create!(name: 'Bag of Holding',
+                                 description: 'This bag has an interior space considerably larger than its outside dimensions, roughly 2 feet in diameter at the mouth and 4 feet deep.', unit_price: 10)
+    item4 = merch1.items.create!(name: 'Ring of Resonance',
+                                 description: 'A ring that resonates with the Ring of Flame Lord', unit_price: 15)
+    item5 = merch1.items.create!(name: 'Phreeoni Card', description: 'HIT + 100', unit_price: 20)
+
+    invoice1 = customer1.invoices.create!(status: 1)
+    invoice2 = customer2.invoices.create!(status: 1)
+
+    invoice_item1 = InvoiceItem.create!(invoice: invoice1, item: item1, quantity: 1, unit_price: 20, status: 1)
+    invoice_item2 = InvoiceItem.create!(invoice: invoice1, item: item2, quantity: 2, unit_price: 6, status: 1)
+    invoice_item3 = InvoiceItem.create!(invoice: invoice1, item: item3, quantity: 1, unit_price: 10, status: 1)
+    invoice_item4 = InvoiceItem.create!(invoice: invoice2, item: item4, quantity: 2, unit_price: 15, status: 1)
+    invoice_item5 = InvoiceItem.create!(invoice: invoice2, item: item5, quantity: 1, unit_price: 20, status: 1)
+
+    discount = merch1.bulk_discounts.create!(percentage: 50, quantity_threshold: 2)
+
+    visit merchant_invoice_path(merch1.id, invoice1.id)
+
+    within "#invoice-item-#{invoice_item1.id}" do
+      expect(page).to have_content('No Discount Applied')
+    end
+
+    within "#invoice-item-#{invoice_item2.id}" do
+      expect(page).to have_link("Bulk Discount ##{discount.id}")
+      click_link "Bulk Discount ##{discount.id}"
+    end
+
+    expect(current_path).to eq(merchant_bulk_discount_path(merch1, discount))
+  end
+end

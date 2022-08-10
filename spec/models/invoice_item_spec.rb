@@ -59,4 +59,3 @@ RSpec.describe InvoiceItem do
     end
   end
 end
-
