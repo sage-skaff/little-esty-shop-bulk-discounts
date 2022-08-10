@@ -24,7 +24,7 @@ RSpec.describe 'merchant bulk discounts new' do
     fill_in 'Percentage', with: 10
     fill_in 'Quantity Threshold', with: 10
 
-    click_on 'Submit'
+    click_on 'Create Discount'
 
     expect(current_path).to eq("/merchants/#{pokemart.id}/bulk_discounts")
     expect(page).to have_content('Percentage: 10%')
