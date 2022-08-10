@@ -17,14 +17,19 @@ class Invoice < ApplicationRecord
 
   # invoice status 1 or 2, invoice_item status 0 or 1
   def self.invoices_with_items_not_shipped
-    temp = self.where.not(status: 0)
-    valid_invoices =  temp.distinct.joins(:invoice_items)
-                          .where.not("invoice_items.status = 2")
-                          .order(created_at: :desc)
+    temp = where.not(status: 0)
+    valid_invoices = temp.distinct.joins(:invoice_items)
+                         .where.not('invoice_items.status = 2')
+                         .order(created_at: :desc)
   end
 
   def total_revenue
     invoice_items.sum('quantity * unit_price')
   end
-end
 
+  def total_discounted_revenue
+    invoice_items.each.sum do |invoice_item|
+      invoice_item.discounted_revenue
+    end
+  end
+end
