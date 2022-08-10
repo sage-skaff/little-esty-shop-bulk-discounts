@@ -74,7 +74,17 @@ RSpec.describe 'admin invoices show page' do
     visit "/admin/invoices/#{@invoice1.id}"
 
     within '#total-revenue' do
-      expect(page).to have_content('Total Revenue: 26')
+      expect(page).to have_content('Total Revenue: $26.00')
+    end
+  end
+
+  it 'displays invoice total discounted revenue' do
+    discount = @pokemart.bulk_discounts.create!(percentage: 50, quantity_threshold: 1)
+
+    visit "/admin/invoices/#{@invoice1.id}"
+
+    within '#total-discounted-revenue' do
+      expect(page).to have_content('Total Discounted Revenue: $13.00')
     end
   end
 
