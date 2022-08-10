@@ -134,7 +134,7 @@ RSpec.describe 'merchant_invoices show page' do
     invoice_item2 = InvoiceItem.create!(invoice: invoice2, item: item4, quantity: 2, unit_price: 15, status: 1)
     invoice_item2 = InvoiceItem.create!(invoice: invoice2, item: item5, quantity: 1, unit_price: 20, status: 1)
 
-    discount = merch2.bulk_discounts.create!(percentage: 50, quantity_threshold: 1)
+    discount = merch1.bulk_discounts.create!(percentage: 50, quantity_threshold: 1)
 
     visit merchant_invoice_path(merch1.id, invoice1.id)
 
